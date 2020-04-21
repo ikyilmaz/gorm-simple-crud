@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"gorm-simple-crud/lib"
+	"gorm-simple/lib"
 )
 
 var (

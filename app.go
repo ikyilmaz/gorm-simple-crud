@@ -6,7 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/mattn/go-sqlite3"
-	"gorm-simple-crud/models"
+	"gorm-simple/models"
 )
 
 func main() {
