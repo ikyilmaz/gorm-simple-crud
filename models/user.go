@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -13,7 +12,7 @@ type User struct {
 	Password  string  `json:"password,omitempty" gorm:"not null;"`
 	IsActive  bool    `json:"isActive,omitempty" gorm:"DEFAULT:true"`
 	RoleID    int     `json:"roleId,omitempty" gorm:"not null;"`
-	Role      *Role   `json:"role,omitempty"`
+	Role      Role    `json:"role,omitempty"`
 	Posts     []*Post `json:"posts,omitempty"`
 	TimeStamps
 }
@@ -21,12 +20,4 @@ type User struct {
 func (u *User) BeforeSave() {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	u.Password = string(hash)
-}
-
-func DefaultUserScope(db *gorm.DB) *gorm.DB {
-	return db.
-		Select("id, first_name, last_name").
-		Where("is_active = ?", true).
-		Order("created_at", false)
-
 }

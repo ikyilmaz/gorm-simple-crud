@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"github.com/fatih/color"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/mattn/go-sqlite3"
 	"gorm-simple/lib"
 	"gorm-simple/models"
+	"gorm-simple/models/scopes"
 )
 
 func main() {
@@ -65,14 +68,19 @@ func main() {
 
 	var users []models.User
 
+	models.DB.LogMode(true)
 	err := models.DB.
 		Preload("Posts").
 		Preload("Role").
-		Scopes(models.DefaultUserScope).
+		Scopes(scopes.PublicUserScope, scopes.DefaultUserScope).
 		Find(&users).
 		Error
 
 	lib.CheckErr(err)
+
+	models.DB.LogMode(false)
+
+	fmt.Printf("%v\n", users[0].Role)
 
 	for _, user := range users {
 		printUser(user)
@@ -82,7 +90,7 @@ func main() {
 
 	err = models.DB.
 		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Scopes(models.DefaultUserScope)
+			return db.Scopes(scopes.PublicUserScope, scopes.DefaultUserScope)
 		}).
 		Find(&post, 1).
 		Error
@@ -93,29 +101,29 @@ func main() {
 }
 
 func printUser(user models.User) {
-	//color.Cyan("-------------USER---------------\n\n")
-	//fmt.Printf("ID: %b FNAME: %s LNAME: %s EMAIL: %s\nPWDHASH: %s\n ROLE_ID: %b ROLENAME: %s",
-	//	user.ID,
-	//	user.FirstName,
-	//	user.LastName,
-	//	user.Email,
-	//	user.Password,
-	//	user.RoleID,
-	//	user.Role.Name,
-	//)
-	//color.Cyan("-----------USERPOSTS------------\n\n")
-	//for _, post := range user.Posts {
-	//	fmt.Printf("ID: %b TITLE: %s USER_ID: %b\n", post.ID, post.Title, post.UserID)
-	//}
-	//color.Cyan("-------------END---------------\n\n")
+	color.Cyan("-------------USER---------------\n\n")
+	fmt.Printf("ID: %d FNAME: %s LNAME: %s EMAIL: %s\nPWDHASH: %s\nROLE_ID: %d ROLENAME: %s\n",
+		user.ID,
+		user.FirstName,
+		user.LastName,
+		user.Email,
+		user.Password,
+		user.RoleID,
+		user.Role.Name,
+	)
+	color.Cyan("-----------USERPOSTS------------\n\n")
+	for _, post := range user.Posts {
+		fmt.Printf("ID: %d TITLE: %s USER_ID: %d\n", post.ID, post.Title, post.UserID)
+	}
+	color.Cyan("-------------END---------------\n\n")
 }
 
 func printPost(post models.Post) {
 	//color.Cyan("-------------POST---------------\n\n")
-	//fmt.Printf("ID: %b NAME: %s USER_ID: %b\n", post.ID, post.Title, post.UserID)
+	//fmt.Printf("ID: %d NAME: %s USER_ID: %d\n", post.ID, post.Title, post.UserID)
 	//if post.User != nil {
 	//	color.Cyan("-----------POSTUSER------------\n\n")
-	//	fmt.Printf("USER_ID: %b USER_FNAME: %s USER_LNAME: %s EMAIL: %s\nPWDHASH: %s\n",
+	//	fmt.Printf("USER_ID: %d USER_FNAME: %s USER_LNAME: %s EMAIL: %s\nPWDHASH: %s\n",
 	//		post.User.ID,
 	//		post.User.FirstName,
 	//		post.User.LastName,

@@ -6,10 +6,10 @@ import (
 )
 
 type Role struct {
-	ID          int    `json:"id,omitempty" gorm:"primary_key"`
-	Name        string `json:"name,omitempty" gorm:"type:nvarchar(32);not null;"`
-	Description string `json:"description,omitempty" gorm:"type:nvarchar(126);"`
-	Users       []*User
+	ID          int     `json:"id,omitempty" gorm:"primary_key"`
+	Name        string  `json:"name,omitempty" gorm:"type:nvarchar(32);not null;"`
+	Description string  `json:"description,omitempty" gorm:"type:nvarchar(126);"`
+	Users       []*User `json:"users,omitempty"`
 }
 
 func (r *Role) BeforeSave() {
