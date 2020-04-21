@@ -90,7 +90,12 @@ func main() {
 
 	err = models.DB.
 		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Scopes(scopes.PublicUserScope, scopes.DefaultUserScope)
+			return db.
+				Preload("Role").
+				Scopes(
+					scopes.PublicUserScope,
+					scopes.DefaultUserScope,
+				)
 		}).
 		Find(&post, 1).
 		Error
@@ -99,8 +104,8 @@ func main() {
 
 	printPost(post)
 }
-
 func printUser(user models.User) {
+
 	color.Cyan("-------------USER---------------\n\n")
 	fmt.Printf("ID: %d FNAME: %s LNAME: %s EMAIL: %s\nPWDHASH: %s\nROLE_ID: %d ROLENAME: %s\n",
 		user.ID,
@@ -116,20 +121,23 @@ func printUser(user models.User) {
 		fmt.Printf("ID: %d TITLE: %s USER_ID: %d\n", post.ID, post.Title, post.UserID)
 	}
 	color.Cyan("-------------END---------------\n\n")
+
 }
 
 func printPost(post models.Post) {
-	//color.Cyan("-------------POST---------------\n\n")
-	//fmt.Printf("ID: %d NAME: %s USER_ID: %d\n", post.ID, post.Title, post.UserID)
-	//if post.User != nil {
-	//	color.Cyan("-----------POSTUSER------------\n\n")
-	//	fmt.Printf("USER_ID: %d USER_FNAME: %s USER_LNAME: %s EMAIL: %s\nPWDHASH: %s\n",
-	//		post.User.ID,
-	//		post.User.FirstName,
-	//		post.User.LastName,
-	//		post.User.Email,
-	//		post.User.Password,
-	//	)
-	//}
-	//color.Cyan("-------------END---------------\n\n")
+	color.Cyan("-------------POST---------------\n\n")
+	fmt.Printf("ID: %d NAME: %s USER_ID: %d\n", post.ID, post.Title, post.UserID)
+	if post.User != nil {
+		color.Cyan("-----------POSTUSER------------\n\n")
+		fmt.Printf("USER_ID: %d USER_FNAME: %s USER_LNAME: %s EMAIL: %s\nPWDHASH: %s\nROLE_ID: %d ROLE_NAME: %s\n",
+			post.User.ID,
+			post.User.FirstName,
+			post.User.LastName,
+			post.User.Email,
+			post.User.Password,
+			post.User.Role.ID,
+			post.User.Role.Name,
+		)
+	}
+	color.Cyan("-------------END---------------\n\n")
 }
