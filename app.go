@@ -33,7 +33,7 @@ func main() {
 	models.DB.Create(&models.User{
 		FirstName: "john",
 		LastName:  "doe",
-		Email:     "ismail@example.com",
+		Email:     "john@example.com",
 		Password:  "87654321",
 		RoleID:    2,
 	})
