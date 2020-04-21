@@ -33,9 +33,8 @@ func init() {
 		AddForeignKey("role_id", "roles(id)", "RESTRICT", "RESTRICT")
 }
 
-type BaseMode struct {
-	ID        int        `json:"id" gorm:"primary_key"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at" sql:"index"`
+type TimeStamps struct {
+	CreatedAt time.Time  `json:"created_at,omitempty"`
+	UpdatedAt time.Time  `json:"updated_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty" sql:"index"`
 }
