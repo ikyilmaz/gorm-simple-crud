@@ -72,7 +72,10 @@ func main() {
 	err := models.DB.
 		Preload("Posts").
 		Preload("Role").
-		Scopes(scopes.PublicUserScope, scopes.DefaultUserScope).
+		Scopes(
+			scopes.PublicUserScope,
+			scopes.DefaultUserScope,
+		).
 		Find(&users).
 		Error
 
